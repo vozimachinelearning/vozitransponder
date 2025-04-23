@@ -1,167 +1,72 @@
-# Real-Time AI Translation and Transcription System
+# VoziTransponder
 
-A powerful real-time translation and transcription application leveraging local AI capabilities for speech recognition, language translation, and text-to-speech synthesis.
+A real-time voice-to-voice translation system with voice cloning capabilities. This application captures speech in one language, translates it, and outputs the translation using a cloned voice that maintains the characteristics of a reference speaker.
 
-## Overview
+## Features
 
-This application provides seamless real-time translation between languages using a combination of local AI models and cloud services. It features a user-friendly interface with support for multiple languages, different translation engines, and various text-to-speech options.
+- Real-time voice capture and processing
+- Bidirectional translation between English and Spanish
+- Voice cloning technology for natural-sounding output
+- Offline-capable speech recognition using Whisper
+- Local text-to-speech synthesis using XTTS
+- Efficient audio processing with noise reduction and filtering
 
-## Key Features
+### Audio Processing
+- Real-time audio capture with PyAudio
+- Audio stream management and noise filtering
+- Voice activity detection to prevent silent processing
 
 ### Speech Recognition
-- Real-time audio capture and processing
-- Local Whisper model for accurate speech recognition
-- Automatic language detection
-- Continuous speech monitoring
-
-### Translation Capabilities
-- Dual translation systems:
-  - Local Helsinki-NLP based model for offline translation
-  - Google Translate API for online translation
-- Support for multiple language pairs
-- Real-time translation processing
-- Queue-based translation management
-
-### Text-to-Speech (TTS)
-- Multiple TTS options:
-  - XTTS (Local AI-powered TTS)
-  - GTTS (Google Text-to-Speech)
-- Language-specific voice synthesis
-- Configurable TTS settings
-  - voice and tone cloning
-
-### User Interface
-- Clean and intuitive interface
-- Dark/Light theme support
-- Real-time transcription display
-- Language pair selection
-- Easy TTS mode switching
-
-## Local AI Components
-- OpenAI whisper models
-- Helsinki-NLP based model for offline translation
-- coqui-tts XTTS-V2 for multilingual offline speech synthesis
-
-### Whisper Speech Recognition
 - Uses OpenAI's Whisper model locally
-- Supports multiple model sizes (base model by default)
-- High-accuracy transcription
-- Built-in language detection
-- Optimized for real-time processing
+- Supports English and Spanish language detection
+- Real-time transcription processing
 
-### Helsinki-NLP Semantic Translation
-- Local neural machine translation
-- Offline translation capabilities
-- Supports multiple language pairs
-- Integrated with XTTS for complete offline operation
+### Translation
+- Bidirectional translation between English and Spanish
+- Uses MarianMT for local translation processing
+- Queue-based translation management for smooth operation
 
-### XTTS (Local Text-to-Speech)
-- AI-powered voice synthesis
-- High-quality natural speech generation
-- Multi-language support
-- Configurable voice parameters
-- Voice cloning support ( per message to keep each message's tone and meaning)
-- Local processing for privacy
+### Text-to-Speech with Voice Cloning
+- XTTS (XTreme Text-to-Speech) for high-quality voice synthesis
+- Voice cloning from a reference audio sample
+- Advanced audio processing features:
+  - Low-pass filtering
+  - Noise gating
+  - Audio normalization
+  - Continuous speech output management
 
-## System Architecture
-INTERPRETER/
-│
-├── main.py                     # Application entry point
-│
-├── src/
-│   ├── UI.py                   # User interface components
-│   ├── audio.py                # Audio capture and management
-│   ├── transcriber.py          # Whisper model integration
-│   ├── translator.py           # Translation management
-│   ├── newtranslator.py        # Enhanced translation capabilities
-│   ├── tts.py                  # Text-to-speech processing
-│   ├── gtts_processor.py       # Google TTS integration
-│   ├── virtual_audio_router.py # Audio routing utilities
-│   │
-│   └── ffmpeg/                 # Audio processing libraries
-│       ├── bin/                # Executable binaries
-│       └── include/            # Header files
-│
-├── models/                     # AI model storage (not shown in snippets)
-│   ├── whisper/                # Whisper speech recognition models
-│   ├── translation/            # Helsinki-NLP translation models
-│   └── tts/                    # XTTS voice models
-│
-└── README.md                   # Project documentation
+## Technical Implementation
 
-### Core Components
-1. **Audio Processing**
-   - Real-time async threaded audio capture
-   - Audio stream management
-   - Device input/output handling
+The system uses a multi-threaded architecture to handle:
+- Audio capture
+- Speech recognition
+- Translation processing
+- Text-to-speech generation
 
-2. **Transcription Engine**
-   - Whisper model integration
-   - Language detection
-   - Text processing
+All processing is done locally for privacy and reduced latency. The system uses a reference audio file ('speaker.wav') for voice cloning, ensuring consistent voice output across translations.
 
-3. **Translation System**
-   - Dual translation engines (Helsinki-NLP and Google)
-   - Translation queue management
-   - Language pair handling (BIDIRECCTIONAL TRANSLATION)
+## Requirements
 
-4. **TTS Processing**
-   - Multiple TTS backends
-   - Text queue management
-   - Audio output handling (system doesn't hear itself when it speaks)
-
-### Threading and Performance
-- Multi-threaded architecture
-- Separate threads for:
-  - Audio capture
-  - Transcription processing (threadpool)
-  - Translation processing (threadpool)
-  - TTS generation
-- Queue-based task management
-- Efficient resource utilization
+- Python 3.x
+- PyAudio for audio capture
+- TTS library for voice synthesis
+- Torch for ML models
+- FFmpeg for audio processing
 
 ## Usage
 
-### Language Selection
-1. Choose two languages from the dropdown menus 
-2. System automatically detects spoken language
-3. Translations are processed in real-time
+1. Ensure a reference audio file ('speaker.wav') is present in the root directory
+2. Run the main application:
+   ```
+   python main.py
+   ```
+3. Start speaking in either English or Spanish
+4. The system will automatically:
+   - Detect the language
+   - Transcribe the speech
+   - Translate to the other language
+   - Output the translation using the cloned voice
 
-### TTS Options
-- **Off**: Text-only mode
-- **XTTS**: Local AI-powered voice synthesis
-- **GTTS**: Google's cloud-based TTS
+## Note
 
-### Interface Controls
-- Toggle Theme: Switch between light and dark modes
-- Clear: Reset all text displays
-- Search: Find specific translations
-
-## Technical Details
-
-### Dependencies
-- PyQt5 for UI
-- Whisper for speech recognition
-- Torch.MarianNMT for local translation
-- XTTS/GTTS for speech synthesis
-- Deep Translator for Google translation
-
-### Performance Considerations
-- Efficient memory management
-- Optimized audio processing
-- Queue-based task handling
-- Thread-safe operations
-- no gpu needed (with a dedicated gpu wait times are reduced, but the system does not need it by default)
-
-## Future Enhancements
-- Additional language model support
-- clustering features for faster but local and private Inference
-- Enhanced offline capabilities
-- Improved voice customization and stability (the system creates corrupt voices if the message is too short)
-- Extended API integration options (paid or free)
-
-## Contributing
-Contributions are welcome! Please feel free to submit pull requests or create issues for bugs and feature requests.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+The system currently supports bidirectional translation between English and Spanish only. Voice cloning quality depends on the reference audio sample quality and length.
